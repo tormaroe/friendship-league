@@ -14,6 +14,8 @@
 
   app.set("view engine", "html");
 
+  app.use("/static", express["static"](__dirname + "/public"));
+
   app.get("/", function(req, res) {
     return res.render("index", {});
   });
