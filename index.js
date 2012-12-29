@@ -8,8 +8,14 @@
 
   app = express();
 
+  app.engine(".html", require("ejs").__express);
+
+  app.set("views", __dirname + "/views");
+
+  app.set("view engine", "html");
+
   app.get("/", function(req, res) {
-    return res.send("Hello World");
+    return res.render("index", {});
   });
 
   app.listen(port);
