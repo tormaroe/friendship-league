@@ -1,0 +1,21 @@
+
+def each_coffee_files
+  Dir.foreach(".") do |f|
+    yield f if f.include? ".coffee"
+  end
+end
+
+task :default => [:run]
+
+task :run => :compile do
+  exec "node index.js"
+end
+
+task :compile do
+  each_coffee_files {|f| %x{coffee -c #{f}} }
+end
+
+#task :deploy => :compile do
+#  %x{af update tormaroe}
+#end
+
