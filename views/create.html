@@ -1,0 +1,32 @@
+<% include index_header.html %>
+<div style="margin-bottom:30px;">
+<h1>Create a new league</h1>
+</div>
+<form class="form-horizontal" method="POST" action="create">
+  <div class="control-group">
+    <label class="control-label" for="leagueName">League Name</label>
+    <div class="controls">
+      <input class="input-block-level" type="text" id="leagueName" placeholder="My Friends League">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="description">Description</label>
+    <div class="controls">
+      <textarea class="input-block-level" id="description" placeholder="Give your league a brief description" rows=4></textarea>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="email">Your email</label>
+    <div class="controls">
+      <input class="input-block-level" type="text" id="email" placeholder="Email">
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn btn-primary">Create now</button>
+    </div>
+  </div>
+</form>
+
+<% include index_footer.html %>
+

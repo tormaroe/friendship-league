@@ -24,7 +24,18 @@ app.get "/", (req, res) ->
       console.log "Inserting document.."
       collection.insert {"a": 1}
 
-  res.render "index", {}
+  res.render "index", {
+    title: "Friendship League"
+  }
+
+app.get "/create", (req, res) ->
+  res.render "create", {
+    title: "Create League"
+  }
+
+app.post "/create", (req, res) ->
+  console.log "create posted"
+  res.send "ok"
 
 app.listen port
 console.log "Listening on port #{port}"
