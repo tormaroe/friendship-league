@@ -41,7 +41,15 @@
       email: req.body.email
     };
     return models.createLeague(league, function() {
-      return res.send("ok");
+      return res.redirect("/create-done/XY1234");
+    });
+  });
+
+  app.get("/create-done/:code", function(req, res) {
+    console.log("create done");
+    return res.render("create_done", {
+      title: "League created!",
+      leagueCode: req.params.code
     });
   });
 

@@ -34,7 +34,14 @@ app.post "/create", (req, res) ->
     description: req.body.description
     email: req.body.email
   models.createLeague league, ->
-    res.send "ok"
+    res.redirect "/create-done/XY1234"
+
+app.get "/create-done/:code", (req, res) ->
+  console.log "create done"
+  res.render "create_done", {
+    title: "League created!"
+    leagueCode: req.params.code
+  }
 
 app.listen port
 console.log "Listening on port #{port}"
