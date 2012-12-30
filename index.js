@@ -28,6 +28,14 @@
 
   app.set("view engine", "html");
 
+  app.locals.formatDate = function(d) {
+    var date, month, year;
+    date = d.getDate();
+    month = d.getMonth() + 1;
+    year = d.getFullYear();
+    return "" + year + "-" + month + "-" + date;
+  };
+
   app.use("/static", express["static"](__dirname + "/public"));
 
   app.get("/", function(req, res) {
@@ -106,7 +114,7 @@
       } else {
         return req.session.regenerate(function() {
           req.session.leagueId = league._id;
-          return res.redirect("/league/" + league._id);
+          return res.redirect("/admin");
         });
       }
     });
@@ -120,8 +128,17 @@
     }
   };
 
-  app.get("/league/:id", restrict, function(req, res) {
-    return res.send("restricted page");
+  app.get("/admin", restrict, function(req, res) {
+    return models.loadLeague(req.session.leagueId, function(err, league) {
+      if (err) {
+        return res.send(err);
+      } else {
+        return res.render("league_admin", {
+          title: league.name,
+          league: league
+        });
+      }
+    });
   });
 
   app.listen(port);

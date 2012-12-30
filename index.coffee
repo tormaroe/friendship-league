@@ -19,6 +19,13 @@ app.engine ".html", require("ejs").__express
 app.set "views", __dirname + "/views"
 app.set "view engine", "html"
 
+app.locals.formatDate = (d) ->
+  date = d.getDate()
+  month = d.getMonth() + 1
+  year = d.getFullYear()
+  "#{year}-#{month}-#{date}"
+
+
 ## ------------------------------------ STATIC FILES
 app.use "/static", express.static(__dirname + "/public")
 
@@ -83,7 +90,7 @@ app.post "/login", (req, res) ->
     else
       req.session.regenerate ->
         req.session.leagueId = league._id
-        res.redirect "/league/" + league._id
+        res.redirect "/admin"
 
 ## ------------------------------------------- RESTRICTED HANDLERS
 
@@ -93,8 +100,14 @@ restrict = (req, res, next) ->
   else
     res.redirect "/login"
 
-app.get "/league/:id", restrict, (req, res) ->
-  res.send "restricted page"
+app.get "/admin", restrict, (req, res) ->
+  models.loadLeague req.session.leagueId, (err, league) ->
+    if err
+      res.send err
+    else
+      res.render "league_admin",
+        title: league.name,
+        league: league
 
 ## ------------------------------- START SERVER
 

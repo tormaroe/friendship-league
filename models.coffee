@@ -3,6 +3,7 @@ hash = require("./pass").hash
 Db = require("mongodb").Db
 Connection = require("mongodb").Connection
 Server = require("mongodb").Server
+ObjectID = require("mongodb").ObjectID
 
 dbName = "fleague"
 
@@ -42,4 +43,10 @@ exports.authenticate = (email, pass, fn) ->
         return fn(null, league) if hash == league.hash
         fn "Invalid password"
 
-
+exports.loadLeague = (id, fn) ->
+  withCollection "leagues", (coll) ->
+    coll.findOne { _id: new ObjectID(id) }, (err, league) ->
+      return fn(err) if err
+      return fn("404") unless league
+      return fn(null, league)
+      
