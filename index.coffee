@@ -26,18 +26,16 @@ app.use "/static", express.static(__dirname + "/public")
 ## ==================================== REQUEST HANDLERS
 
 app.get "/", (req, res) ->
-  res.render "index", {
+  res.render "index",
     title: "Friendship League"
-  }
 
 renderCreateForm = (res, msg, values) ->
   recaptcha = new Recaptcha RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY
-  res.render "create", {
+  res.render "create",
     title: "Create League"
     recaptcha: do recaptcha.toHTML
     message: msg
     values: values
-  }
 
 app.get "/create", (req, res) ->
   renderCreateForm res
@@ -68,25 +66,35 @@ app.post "/create", (req, res) ->
 
 app.get "/create-done", (req, res) ->
   console.log "create done"
-  res.render "create_done", {
+  res.render "create_done",
     title: "League created!"
-  }
 
 app.get "/login", (req, res) ->
-  res.render "login", {
+  res.render "login",
     title: "Sign in to Friendship League"
     message: undefined
-  }
 
 app.post "/login", (req, res) ->
   models.authenticate req.body.email, req.body.password, (err, league) ->
     if err
-      res.render "login", {
+      res.render "login",
         title: "Sign in to Friendship League"
         message: err
-      }
     else
-      res.send league.name
+      req.session.regenerate ->
+        req.session.leagueId = league._id
+        res.redirect "/league/" + league._id
+
+## ------------------------------------------- RESTRICTED HANDLERS
+
+restrict = (req, res, next) ->
+  if req.session.leagueId
+    do next
+  else
+    res.redirect "/login"
+
+app.get "/league/:id", restrict, (req, res) ->
+  res.send "restricted page"
 
 ## ------------------------------- START SERVER
 

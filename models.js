@@ -22,15 +22,15 @@
 
   exports.createLeague = function(league, callback) {
     return withCollection("leagues", function(coll) {
-      console.log("CREATE LEAGUE " + league.name);
       return coll.findOne({
         email: league.email
       }, function(err, doc) {
         if (err) {
           return callback(err);
         } else if (doc) {
-          return callback("A league is already registered for the given email address!");
+          return callback("Sorry, a league is already registered for the given email address!");
         } else {
+          console.log("CREATE LEAGUE " + league.name);
           return hash(league.password, function(err, salt, hash) {
             if (err) {
               throw err;
