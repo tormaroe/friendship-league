@@ -1,4 +1,3 @@
-* Create league: Add validation
 * Create league: Save
 * Sign in
 * Leage page: Add participant

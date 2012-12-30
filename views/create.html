@@ -2,13 +2,15 @@
 <div style="margin-bottom:30px;">
 <h1>Create a new league</h1>
 </div>
-<% if (message) { %>
+<div id="messages">
+  <% if (message) { %>
   <div class="alert alert-error">
     <%= message %>
   </div>
-<% } %>
+  <% } %>
+</div>
 <form class="form-horizontal" method="POST" action="create">
-  <div class="control-group">
+  <div class="control-group" id="ctrlGrpLeagueName">
     <label class="control-label" for="leagueName">League Name</label>
     <div class="controls">
       <input class="input-block-level" type="text" id="leagueName" name="leagueName" placeholder="My Friends League"<% if (values) { %> value="<%- values.name %>"<% } %>>
@@ -20,13 +22,13 @@
       <textarea class="input-block-level" id="description" name="description" placeholder="Give your league a brief description" rows=4><% if (values) { %><%- values.description %><% } %></textarea>
     </div>
   </div>
-  <div class="control-group">
+  <div class="control-group" id="ctrlGrpEmail">
     <label class="control-label" for="email">Your email</label>
     <div class="controls">
       <input class="input-block-level" type="text" id="email" name="email" placeholder="Email"<% if (values) { %> value="<%- values.email %>"<% } %>>
     </div>
   </div>
-  <div class="control-group">
+  <div class="control-group" id="ctrlGrpPassword">
     <label class="control-label" for="password">Password</label>
     <div class="controls">
       <input class="input-block-level" type="password" id="password" name="password" placeholder="League password"<% if (values) { %> value="<%- values.password %>"<% } %>>
@@ -39,10 +41,39 @@
   </div>
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn btn-primary">Create now</button>
+      <button onclick="return validateForm()" class="btn btn-primary">Create now</button>
     </div>
   </div>
 </form>
+
+<script type="text/javascript">
+  var validateForm = function() {
+    var messages = $("#messages")
+      , leagueName = document.getElementById("leagueName").value
+      , email = document.getElementById("email").value
+      , password = document.getElementById("password").value
+      , ok = true;
+    messages.empty();
+    $(".control-group").removeClass("error");
+    if($.trim(leagueName).length === 0) {
+      messages.append('<div class="alert alert-error">Missing league name!</div>');
+      $("#ctrlGrpLeagueName").addClass("error");
+      ok = false;
+    }
+    if($.trim(email).length === 0 || email.indexOf("@") === -1) {
+      messages.append('<div class="alert alert-error">Invalid email address!</div>');
+      $("#ctrlGrpEmail").addClass("error");
+      ok = false;
+    }
+    if($.trim(password).length < 8) {
+      messages.append('<div class="alert alert-error">Password must be at least 8 characters!</div>');
+      $("#ctrlGrpPassword").addClass("error");
+      ok = false;
+    }
+
+    return ok;
+  };
+</script>
 
 <% include index_footer.html %>
 
