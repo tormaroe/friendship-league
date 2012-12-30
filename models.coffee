@@ -1,3 +1,5 @@
+hash = require("./pass").hash
+
 Db = require("mongodb").Db
 Connection = require("mongodb").Connection
 Server = require("mongodb").Server
@@ -12,4 +14,15 @@ withCollection = (colName, fn) ->
 exports.createLeague = (league, callback) ->
   withCollection "leagues", (coll) ->
     console.log "CREATE LEAGUE " + league.name
-    do callback
+    # TODO: validate that email is unique
+    hash league.password, (err, salt, hash) ->
+      throw err if err
+      league.hash = hash
+      league.salt = salt
+      league.created = new Date()
+      league.last_login = null
+      league.login_count = 0
+      delete league.password
+
+      coll.insert league, (err, doc) ->
+        do callback
