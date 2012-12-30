@@ -72,13 +72,16 @@ app.get "/create-done", (req, res) ->
 app.get "/login", (req, res) ->
   res.render "login", {
     title: "Sign in to Friendship League"
+    message: undefined
   }
 
 app.post "/login", (req, res) ->
   models.authenticate req.body.email, req.body.password, (err, league) ->
-    console.log "QUUX " + err
     if err
-      res.send err
+      res.render "login", {
+        title: "Sign in to Friendship League"
+        message: err
+      }
     else
       res.send league.name
 

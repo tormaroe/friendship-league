@@ -2,5 +2,10 @@
 <div style="margin-bottom:30px;">
   <h1>Sign in to your league</h1>
 </div>
+  <% if (message) { %>
+  <div class="alert alert-error">
+    <strong>Login failed!</strong> <%= message %>
+  </div>
+  <% } %>
 <% include login_form.html %>
 <% include index_footer.html %>

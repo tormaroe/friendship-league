@@ -45,15 +45,12 @@
       return coll.findOne({
         email: email
       }, function(err, league) {
-        console.log(err);
         if (err) {
           return fn(err);
         }
-        console.log("FOO");
         if (!league) {
-          return fn("No league found");
+          return fn("No league found for that email address");
         }
-        console.log("BAR");
         return hash(pass, league.salt, function(err, hash) {
           if (err) {
             return fn(err);

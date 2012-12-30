@@ -87,15 +87,18 @@
 
   app.get("/login", function(req, res) {
     return res.render("login", {
-      title: "Sign in to Friendship League"
+      title: "Sign in to Friendship League",
+      message: void 0
     });
   });
 
   app.post("/login", function(req, res) {
     return models.authenticate(req.body.email, req.body.password, function(err, league) {
-      console.log("QUUX " + err);
       if (err) {
-        return res.send(err);
+        return res.render("login", {
+          title: "Sign in to Friendship League",
+          message: err
+        });
       } else {
         return res.send(league.name);
       }

@@ -30,11 +30,8 @@ exports.createLeague = (league, callback) ->
 exports.authenticate = (email, pass, fn) ->
   withCollection "leagues", (coll) ->
     coll.findOne { email: email }, (err, league) ->
-      console.log err
       return fn(err) if err
-      console.log "FOO"
-      return fn("No league found") unless league
-      console.log "BAR"
+      return fn("No league found for that email address") unless league
       hash pass, league.salt, (err, hash) ->
         return fn(err) if err
         return fn(null, league) if hash == league.hash
