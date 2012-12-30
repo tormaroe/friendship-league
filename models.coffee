@@ -43,10 +43,22 @@ exports.authenticate = (email, pass, fn) ->
         return fn(null, league) if hash == league.hash
         fn "Invalid password"
 
+loadLeagueInternal = (coll, id, fn) ->
+  coll.findOne { _id: new ObjectID(id) }, (err, league) ->
+    return fn(err) if err
+    return fn("404") unless league
+    return fn(null, league)
+
 exports.loadLeague = (id, fn) ->
   withCollection "leagues", (coll) ->
-    coll.findOne { _id: new ObjectID(id) }, (err, league) ->
+    loadLeagueInternal coll, id, fn
+
+exports.addFriend = (leagueId, friend, fn) ->
+  withCollection "leagues", (coll) ->
+    loadLeagueInternal coll, id, (err, league) ->
       return fn(err) if err
-      return fn("404") unless league
-      return fn(null, league)
-      
+      league.friends = [] unless league.friends
+      # TODO: Verify unique friend in league...
+      league.friends.push friend
+      coll.save league, (err, doc) ->
+        fn err, doc
