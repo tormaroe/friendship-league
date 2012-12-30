@@ -40,4 +40,31 @@
     });
   };
 
+  exports.authenticate = function(email, pass, fn) {
+    return withCollection("leagues", function(coll) {
+      return coll.findOne({
+        email: email
+      }, function(err, league) {
+        console.log(err);
+        if (err) {
+          return fn(err);
+        }
+        console.log("FOO");
+        if (!league) {
+          return fn("No league found");
+        }
+        console.log("BAR");
+        return hash(pass, league.salt, function(err, hash) {
+          if (err) {
+            return fn(err);
+          }
+          if (hash === league.hash) {
+            return fn(null, league);
+          }
+          return fn("Invalid password");
+        });
+      });
+    });
+  };
+
 }).call(this);

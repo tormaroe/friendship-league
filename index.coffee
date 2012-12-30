@@ -6,8 +6,11 @@ Recaptcha = require("recaptcha").Recaptcha
 app = do express
 
 ## ---------------------------------- GENERAL CONFIG
-port = 3000
 app.use express.bodyParser()
+app.use express.cookieParser("überzecret!")
+app.use express.session()
+
+port = 3000
 RECAPTCHA_PUBLIC_KEY = "6Lcn6NoSAAAAACx49LIh_rj4NAMAgyilezPbtMLe"
 RECAPTCHA_PRIVATE_KEY = "6Lcn6NoSAAAAAGulj9_OoR-PH8x22s_1cU1g5pNa"
 
@@ -72,7 +75,12 @@ app.get "/login", (req, res) ->
   }
 
 app.post "/login", (req, res) ->
-  res.send "Not Yet Implemented"
+  models.authenticate req.body.email, req.body.password, (err, league) ->
+    console.log "QUUX " + err
+    if err
+      res.send err
+    else
+      res.send league.name
 
 ## ------------------------------- START SERVER
 

@@ -26,3 +26,18 @@ exports.createLeague = (league, callback) ->
 
       coll.insert league, (err, doc) ->
         do callback
+
+exports.authenticate = (email, pass, fn) ->
+  withCollection "leagues", (coll) ->
+    coll.findOne { email: email }, (err, league) ->
+      console.log err
+      return fn(err) if err
+      console.log "FOO"
+      return fn("No league found") unless league
+      console.log "BAR"
+      hash pass, league.salt, (err, hash) ->
+        return fn(err) if err
+        return fn(null, league) if hash == league.hash
+        fn "Invalid password"
+
+

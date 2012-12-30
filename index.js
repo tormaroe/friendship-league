@@ -10,9 +10,13 @@
 
   app = express();
 
-  port = 3000;
-
   app.use(express.bodyParser());
+
+  app.use(express.cookieParser("überzecret!"));
+
+  app.use(express.session());
+
+  port = 3000;
 
   RECAPTCHA_PUBLIC_KEY = "6Lcn6NoSAAAAACx49LIh_rj4NAMAgyilezPbtMLe";
 
@@ -88,7 +92,14 @@
   });
 
   app.post("/login", function(req, res) {
-    return res.send("Not Yet Implemented");
+    return models.authenticate(req.body.email, req.body.password, function(err, league) {
+      console.log("QUUX " + err);
+      if (err) {
+        return res.send(err);
+      } else {
+        return res.send(league.name);
+      }
+    });
   });
 
   app.listen(port);
