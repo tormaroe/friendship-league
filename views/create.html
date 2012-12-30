@@ -2,29 +2,34 @@
 <div style="margin-bottom:30px;">
 <h1>Create a new league</h1>
 </div>
+<% if (message) { %>
+  <div class="alert alert-error">
+    <%= message %>
+  </div>
+<% } %>
 <form class="form-horizontal" method="POST" action="create">
   <div class="control-group">
     <label class="control-label" for="leagueName">League Name</label>
     <div class="controls">
-      <input class="input-block-level" type="text" id="leagueName" name="leagueName" placeholder="My Friends League">
+      <input class="input-block-level" type="text" id="leagueName" name="leagueName" placeholder="My Friends League"<% if (values) { %> value="<%- values.name %>"<% } %>>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="description">Description</label>
     <div class="controls">
-      <textarea class="input-block-level" id="description" name="description" placeholder="Give your league a brief description" rows=4></textarea>
+      <textarea class="input-block-level" id="description" name="description" placeholder="Give your league a brief description" rows=4><% if (values) { %><%- values.description %><% } %></textarea>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="email">Your email</label>
     <div class="controls">
-      <input class="input-block-level" type="text" id="email" name="email" placeholder="Email">
+      <input class="input-block-level" type="text" id="email" name="email" placeholder="Email"<% if (values) { %> value="<%- values.email %>"<% } %>>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="password">Password</label>
     <div class="controls">
-      <input class="input-block-level" type="password" id="password" name="password" placeholder="League password">
+      <input class="input-block-level" type="password" id="password" name="password" placeholder="League password"<% if (values) { %> value="<%- values.password %>"<% } %>>
     </div>
   </div>
   <div class="control-group">

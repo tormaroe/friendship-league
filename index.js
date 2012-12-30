@@ -32,22 +32,30 @@
     });
   });
 
-  renderCreateForm = function(res, msg) {
+  renderCreateForm = function(res, msg, values) {
     var recaptcha;
     recaptcha = new Recaptcha(RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY);
     return res.render("create", {
       title: "Create League",
-      recaptcha: recaptcha.toHTML()
+      recaptcha: recaptcha.toHTML(),
+      message: msg,
+      values: values
     });
   };
 
   app.get("/create", function(req, res) {
-    return renderCreateForm(res, "");
+    return renderCreateForm(res);
   });
 
   app.post("/create", function(req, res) {
-    var recaptcha, recaptchaData;
+    var league, recaptcha, recaptchaData;
     console.log("create posted");
+    league = {
+      name: req.body.leagueName,
+      description: req.body.description,
+      email: req.body.email,
+      password: req.body.password
+    };
     recaptchaData = {
       remoteip: req.connection.remoteAddress,
       challenge: req.body.recaptcha_challenge_field,
@@ -55,20 +63,13 @@
     };
     recaptcha = new Recaptcha(RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY, recaptchaData);
     return recaptcha.verify(function(success, errorCode) {
-      var league;
       if (success) {
-        league = {
-          name: req.body.leagueName,
-          description: req.body.description,
-          email: req.body.email,
-          password: req.body.password
-        };
         return models.createLeague(league, function() {
           return res.redirect("/create-done");
         });
       } else {
         console.log("ERROR: " + errorCode);
-        return renderCreateForm(res, "CAPTCHA invalid - are you sure you're a human?");
+        return renderCreateForm(res, "CAPTCHA invalid - are you sure you're a human?", league);
       }
     });
   });

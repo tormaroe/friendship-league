@@ -27,18 +27,25 @@ app.get "/", (req, res) ->
     title: "Friendship League"
   }
 
-renderCreateForm = (res, msg) ->
+renderCreateForm = (res, msg, values) ->
   recaptcha = new Recaptcha RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY
   res.render "create", {
     title: "Create League"
     recaptcha: do recaptcha.toHTML
+    message: msg
+    values: values
   }
 
 app.get "/create", (req, res) ->
-  renderCreateForm res, ""
+  renderCreateForm res
 
 app.post "/create", (req, res) ->
   console.log "create posted"
+  league =
+    name: req.body.leagueName
+    description: req.body.description
+    email: req.body.email
+    password: req.body.password
   recaptchaData =
     remoteip: req.connection.remoteAddress
     challenge: req.body.recaptcha_challenge_field
@@ -46,16 +53,11 @@ app.post "/create", (req, res) ->
   recaptcha = new Recaptcha RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY, recaptchaData
   recaptcha.verify (success, errorCode) ->
     if success
-      league =
-        name: req.body.leagueName
-        description: req.body.description
-        email: req.body.email
-        password: req.body.password
       models.createLeague league, ->
         res.redirect "/create-done"
     else
       console.log "ERROR: " + errorCode
-      renderCreateForm res, "CAPTCHA invalid - are you sure you're a human?"
+      renderCreateForm res, "CAPTCHA invalid - are you sure you're a human?", league
 
 
 app.get "/create-done", (req, res) ->
