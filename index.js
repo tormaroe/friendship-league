@@ -68,8 +68,12 @@
     recaptcha = new Recaptcha(RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY, recaptchaData);
     return recaptcha.verify(function(success, errorCode) {
       if (success) {
-        return models.createLeague(league, function() {
-          return res.redirect("/create-done");
+        return models.createLeague(league, function(err) {
+          if (!err) {
+            return res.redirect("/create-done");
+          } else {
+            return renderCreateForm(res, err, league);
+          }
         });
       } else {
         console.log("ERROR: " + errorCode);

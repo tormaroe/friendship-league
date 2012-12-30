@@ -56,8 +56,11 @@ app.post "/create", (req, res) ->
   recaptcha = new Recaptcha RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY, recaptchaData
   recaptcha.verify (success, errorCode) ->
     if success
-      models.createLeague league, ->
-        res.redirect "/create-done"
+      models.createLeague league, (err) ->
+        unless err
+          res.redirect "/create-done"
+        else
+          renderCreateForm res, err, league
     else
       console.log "ERROR: " + errorCode
       renderCreateForm res, "CAPTCHA invalid - are you sure you're a human?", league

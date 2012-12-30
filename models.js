@@ -23,19 +23,29 @@
   exports.createLeague = function(league, callback) {
     return withCollection("leagues", function(coll) {
       console.log("CREATE LEAGUE " + league.name);
-      return hash(league.password, function(err, salt, hash) {
+      return coll.findOne({
+        email: league.email
+      }, function(err, doc) {
         if (err) {
-          throw err;
+          return callback(err);
+        } else if (doc) {
+          return callback("A league is already registered for the given email address!");
+        } else {
+          return hash(league.password, function(err, salt, hash) {
+            if (err) {
+              throw err;
+            }
+            league.hash = hash;
+            league.salt = salt;
+            league.created = new Date();
+            league.last_login = null;
+            league.login_count = 0;
+            delete league.password;
+            return coll.insert(league, function(err, doc) {
+              return callback(err);
+            });
+          });
         }
-        league.hash = hash;
-        league.salt = salt;
-        league.created = new Date();
-        league.last_login = null;
-        league.login_count = 0;
-        delete league.password;
-        return coll.insert(league, function(err, doc) {
-          return callback();
-        });
       });
     });
   };

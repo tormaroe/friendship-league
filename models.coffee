@@ -13,19 +13,24 @@ withCollection = (colName, fn) ->
 
 exports.createLeague = (league, callback) ->
   withCollection "leagues", (coll) ->
-    console.log "CREATE LEAGUE " + league.name
-    # TODO: validate that email is unique
-    hash league.password, (err, salt, hash) ->
-      throw err if err
-      league.hash = hash
-      league.salt = salt
-      league.created = new Date()
-      league.last_login = null
-      league.login_count = 0
-      delete league.password
+    coll.findOne { email: league.email }, (err, doc) ->
+      if err
+        callback err
+      else if doc
+        callback "Sorry, a league is already registered for the given email address!"
+      else
+        console.log "CREATE LEAGUE " + league.name
+        hash league.password, (err, salt, hash) ->
+          throw err if err
+          league.hash = hash
+          league.salt = salt
+          league.created = new Date()
+          league.last_login = null
+          league.login_count = 0
+          delete league.password
 
-      coll.insert league, (err, doc) ->
-        do callback
+          coll.insert league, (err, doc) ->
+            callback err
 
 exports.authenticate = (email, pass, fn) ->
   withCollection "leagues", (coll) ->
