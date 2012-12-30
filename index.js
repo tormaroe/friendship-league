@@ -10,6 +10,8 @@
 
   port = 3000;
 
+  app.use(express.bodyParser());
+
   app.engine(".html", require("ejs").__express);
 
   app.set("views", __dirname + "/views");
@@ -17,8 +19,6 @@
   app.set("view engine", "html");
 
   app.use("/static", express["static"](__dirname + "/public"));
-
-  app.use(express.bodyParser());
 
   app.get("/", function(req, res) {
     return res.render("index", {
@@ -38,10 +38,11 @@
     league = {
       name: req.body.leagueName,
       description: req.body.description,
-      email: req.body.email
+      email: req.body.email,
+      password: req.body.password
     };
-    return models.createLeague(league, function() {
-      return res.redirect("/create-done/XY1234");
+    return models.createLeague(league, function(uniqueCode) {
+      return res.redirect("/create-done/" + uniqueCode);
     });
   });
 

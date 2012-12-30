@@ -12,4 +12,5 @@ withCollection = (colName, fn) ->
 exports.createLeague = (league, callback) ->
   withCollection "leagues", (coll) ->
     console.log "CREATE LEAGUE " + league.name
-    do callback
+    uniqueCode = "XY1234"
+    callback uniqueCode

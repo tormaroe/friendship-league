@@ -1,11 +1,11 @@
 express = require "express"
 models = require "./models"
 
-
 app = do express
 
 ## ---------------------------------- GENERAL CONFIG
 port = 3000
+app.use express.bodyParser()
 
 ## ------------------------------------------- VIEWS
 app.engine ".html", require("ejs").__express
@@ -15,7 +15,8 @@ app.set "view engine", "html"
 ## ------------------------------------ STATIC FILES
 app.use "/static", express.static(__dirname + "/public")
 
-app.use express.bodyParser()
+
+## ==================================== REQUEST HANDLERS
 
 app.get "/", (req, res) ->
   res.render "index", {
@@ -33,8 +34,9 @@ app.post "/create", (req, res) ->
     name: req.body.leagueName
     description: req.body.description
     email: req.body.email
-  models.createLeague league, ->
-    res.redirect "/create-done/XY1234"
+    password: req.body.password
+  models.createLeague league, (uniqueCode) ->
+    res.redirect "/create-done/" + uniqueCode
 
 app.get "/create-done/:code", (req, res) ->
   console.log "create done"
@@ -42,6 +44,8 @@ app.get "/create-done/:code", (req, res) ->
     title: "League created!"
     leagueCode: req.params.code
   }
+
+## ------------------------------- START SERVER
 
 app.listen port
 console.log "Listening on port #{port}"
