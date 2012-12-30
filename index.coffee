@@ -66,6 +66,14 @@ app.get "/create-done", (req, res) ->
     title: "League created!"
   }
 
+app.get "/login", (req, res) ->
+  res.render "login", {
+    title: "Sign in to Friendship League"
+  }
+
+app.post "/login", (req, res) ->
+  res.send "Not Yet Implemented"
+
 ## ------------------------------- START SERVER
 
 app.listen port

@@ -81,6 +81,16 @@
     });
   });
 
+  app.get("/login", function(req, res) {
+    return res.render("login", {
+      title: "Sign in to Friendship League"
+    });
+  });
+
+  app.post("/login", function(req, res) {
+    return res.send("Not Yet Implemented");
+  });
+
   app.listen(port);
 
   console.log("Listening on port " + port);

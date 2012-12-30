@@ -34,7 +34,6 @@
         league.login_count = 0;
         delete league.password;
         return coll.insert(league, function(err, doc) {
-          console.log("_id: " + doc._id);
           return callback();
         });
       });
