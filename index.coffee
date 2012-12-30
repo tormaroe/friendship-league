@@ -35,14 +35,13 @@ app.post "/create", (req, res) ->
     description: req.body.description
     email: req.body.email
     password: req.body.password
-  models.createLeague league, (uniqueCode) ->
-    res.redirect "/create-done/" + uniqueCode
+  models.createLeague league, ->
+    res.redirect "/create-done"
 
-app.get "/create-done/:code", (req, res) ->
+app.get "/create-done", (req, res) ->
   console.log "create done"
   res.render "create_done", {
     title: "League created!"
-    leagueCode: req.params.code
   }
 
 ## ------------------------------- START SERVER

@@ -41,16 +41,15 @@
       email: req.body.email,
       password: req.body.password
     };
-    return models.createLeague(league, function(uniqueCode) {
-      return res.redirect("/create-done/" + uniqueCode);
+    return models.createLeague(league, function() {
+      return res.redirect("/create-done");
     });
   });
 
-  app.get("/create-done/:code", function(req, res) {
+  app.get("/create-done", function(req, res) {
     console.log("create done");
     return res.render("create_done", {
-      title: "League created!",
-      leagueCode: req.params.code
+      title: "League created!"
     });
   });
 

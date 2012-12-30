@@ -20,10 +20,8 @@
 
   exports.createLeague = function(league, callback) {
     return withCollection("leagues", function(coll) {
-      var uniqueCode;
       console.log("CREATE LEAGUE " + league.name);
-      uniqueCode = "XY1234";
-      return callback(uniqueCode);
+      return callback();
     });
   };
 
