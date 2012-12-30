@@ -92,6 +92,13 @@ app.post "/login", (req, res) ->
         req.session.leagueId = league._id
         res.redirect "/admin"
 
+app.get "/public/:id", (req, res) ->
+  models.loadLeague req.params.id, (err, league) ->
+    if err
+      res.send err
+    else
+      res.send league.name
+
 ## ------------------------------------------- RESTRICTED HANDLERS
 
 restrict = (req, res, next) ->
@@ -108,6 +115,18 @@ app.get "/admin", restrict, (req, res) ->
       res.render "league_admin",
         title: league.name,
         league: league
+
+app.get "/add-friend", restrict, (req, res) ->
+  res.send "ADD FRIEND PAGE"
+
+app.get "/add-event", restrict, (req, res) ->
+  res.send "ADD EVENT PAGE"
+
+app.post "/add-friend", restrict, (req, res) ->
+  res.redirect "/admin"
+
+app.post "/add-event", restrict, (req, res) ->
+  res.redirect "/admin"
 
 ## ------------------------------- START SERVER
 

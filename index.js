@@ -120,6 +120,16 @@
     });
   });
 
+  app.get("/public/:id", function(req, res) {
+    return models.loadLeague(req.params.id, function(err, league) {
+      if (err) {
+        return res.send(err);
+      } else {
+        return res.send(league.name);
+      }
+    });
+  });
+
   restrict = function(req, res, next) {
     if (req.session.leagueId) {
       return next();
@@ -139,6 +149,22 @@
         });
       }
     });
+  });
+
+  app.get("/add-friend", restrict, function(req, res) {
+    return res.send("ADD FRIEND PAGE");
+  });
+
+  app.get("/add-event", restrict, function(req, res) {
+    return res.send("ADD EVENT PAGE");
+  });
+
+  app.post("/add-friend", restrict, function(req, res) {
+    return res.redirect("/admin");
+  });
+
+  app.post("/add-event", restrict, function(req, res) {
+    return res.redirect("/admin");
   });
 
   app.listen(port);
